@@ -18,7 +18,8 @@ class Config:
     device = ["cuda:0"]     # ["cuda:0", "cuda:1"]
 
     # Train
-    batch_size = 16
+    num_iters = 1000000
+    batch_size = 32
 
     # Paths
     exp_path = f'exps/{exp_name}'
@@ -34,12 +35,29 @@ class Config:
 
     # Ablation
     learn_top = False
+    classification_weight = 0.01
     y_condition = False
     y_classes = 10
+    y_criterion = "multi-classes"           # ["multi-classes", "single-class"]
 
     # Dataset
     img_shape = (28, 28, 1)
 
     # Optimizer
+    lr = 1e-3
     beta1 = 0.9
     beta2 = 0.999
+    lr_scheduler = "noam_learning_rate_decay"
+    lr_scheduler_args = {
+        'warmup_steps': 4000,
+        'minimum': 1e-4
+    }
+    max_grad_clip = 5
+    max_grad_norm = 100
+
+    # Log
+    lr_log_freq = 50
+    ckpt_save_freq = 5000
+    max_ckpts = 20
+    sanity_freq = 100
+    infer_freq = 100
