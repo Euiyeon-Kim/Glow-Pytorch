@@ -57,7 +57,7 @@ class Config:
 
     # Log
     lr_log_freq = 50
-    ckpt_save_freq = 5000
+    ckpt_save_freq = 1000
     max_ckpts = 20
-    sanity_freq = 100
-    infer_freq = 100
+    sanity_freq = 1000
+    infer_freq = 1000

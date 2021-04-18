@@ -8,7 +8,8 @@ def get_train_loader(config):
     transform = transforms.Compose([transforms.ToTensor(),
                                     transforms.Normalize((0.5,), (0.5,))])
     train_dataset = MNIST(root='datasets', train=True, transform=transform, download=True)
-    train_loader = DataLoader(dataset=train_dataset, batch_size=config.batch_size, shuffle=True)
+    train_loader = DataLoader(dataset=train_dataset, batch_size=config.batch_size,
+                              pin_memory=True, drop_last=True, shuffle=True)
     return train_loader
 
 
