@@ -13,12 +13,11 @@ from dataloader.mnist import get_train_loader
 
 
 def train(config):
-    shutil.copy('config.py', f'{config.exp_path}/config.py')
-    exit()
     log_dir = f'{config.exp_path}/logs'
     chkpt_dir = f'{config.exp_path}/chkpt'
     os.makedirs(log_dir, exist_ok=True)
     os.makedirs(chkpt_dir, exist_ok=True)
+    shutil.copy('config.py', f'{config.exp_path}/config.py')
     writer = SummaryWriter(log_dir=log_dir)
 
     # Define model
