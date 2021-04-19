@@ -1,20 +1,20 @@
 import os
+import shutil
 
-import cv2
 import torch
-import numpy as np
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
 
 from config import Config
 from models.Glow import Glow
 from models import lr_scheduler
-from models.modules import thops
 from utils import get_proper_device, save
 from dataloader.mnist import get_train_loader
 
 
 def train(config):
+    shutil.copy('config.py', f'{config.exp_path}/config.py')
+    exit()
     log_dir = f'{config.exp_path}/logs'
     chkpt_dir = f'{config.exp_path}/chkpt'
     os.makedirs(log_dir, exist_ok=True)
@@ -104,7 +104,8 @@ def train(config):
 
             # Save checkpoints
             if cur_step % config.ckpt_save_freq == 0:
-                save(cur_step, model, optim, chkpt_dir, True, config.max_ckpts)
+                save(global_step=cur_step, graph=model, optim=optim,
+                     pkg_dir=chkpt_dir, is_best=True, max_checkpoints=config.max_ckpts)
 
             # Sanity check
             if cur_step % config.sanity_freq == 0:
