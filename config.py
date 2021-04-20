@@ -13,13 +13,13 @@ class Datasets(Enum):
 
 class Config:
     # Options
-    exp_name = 'tmp'
+    exp_name = 'why'
     dataset_name = Datasets.MNIST
     device = ["cuda:0"]     # ["cuda:0", "cuda:1"]
 
     # Train
     num_iters = 1000000
-    batch_size = 32
+    batch_size = 128
 
     # Paths
     exp_path = f'exps/{exp_name}'
@@ -27,9 +27,9 @@ class Config:
     valid_root_dir = f'datasets/{dataset_name}/valid'
 
     # Architecture
-    K = 16
-    L = 2
-    hidden_channels = 64
+    K = 10
+    L = 3
+    hidden_channels = 512
     actnorm_scale = 1.0
     LU_decomposed = False
 
@@ -41,7 +41,7 @@ class Config:
     y_criterion = "multi-classes"           # ["multi-classes", "single-class"]
 
     # Dataset
-    img_shape = (28, 28, 1)
+    img_shape = (32, 32, 1)
 
     # Optimizer
     lr = 1e-3

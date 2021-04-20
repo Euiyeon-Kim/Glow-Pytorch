@@ -90,3 +90,39 @@ def save(global_step, graph, optim, criterion_dict=None,
             if os.path.exists(path):
                 os.remove(path)
             history.pop(0)
+
+
+def load(step_or_path, graph, optim=None, criterion_dict=None, pkg_dir="", device=None):
+    step = step_or_path
+    save_path = None
+    if isinstance(step, int):
+        save_path = os.path.join(pkg_dir, _file_at_step(step))
+    if isinstance(step, str):
+        if pkg_dir is not None:
+            if step == "best":
+                save_path = os.path.join(pkg_dir, _file_best())
+            else:
+                save_path = os.path.join(pkg_dir, step)
+        else:
+            save_path = step
+    if save_path is not None and not os.path.exists(save_path):
+        print("[Checkpoint]: Failed to find {}".format(save_path))
+        return
+    if save_path is None:
+        print("[Checkpoint]: Cannot load the checkpoint with given step or filename or `best`")
+        return
+
+    # begin to load
+    state = torch.load(save_path, map_location=device)
+    global_step = state["global_step"]
+    graph.load_state_dict(state["graph"])
+    if optim is not None:
+        optim.load_state_dict(state["optim"])
+    if criterion_dict is not None:
+        for k in criterion_dict:
+            criterion_dict[k].load_state_dict(state["criterion"][k])
+
+    graph.set_actnorm_init(inited=True)
+
+    print("[Checkpoint]: Load {} successfully".format(save_path))
+    return global_step
