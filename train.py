@@ -96,7 +96,7 @@ def train(config):
                     writer.add_scalar("train_info/grad_norm", grad_norm, cur_step)
 
             # Logging losses
-            print(f"Train Epoch {epoch} / Iter {idx} || {loss_generative}")
+            # print(f"Train Epoch {epoch} / Iter {idx} || {loss_generative}")
             writer.add_scalar("loss/nll", loss_generative, cur_step)
             if config.y_condition:
                 writer.add_scalar("loss/classification", loss_classes, cur_step)
@@ -109,6 +109,7 @@ def train(config):
             # Sanity check
             if cur_step % config.sanity_freq == 0:
                 recon = model(z=z, y_onehot=onehot_label, reverse=True)
+                print(f'Cur Step:{cur_step} | minimum: {torch.min(recon)}, maximum: {torch.max(recon)}')
                 for bi in range(min([len(recon), 4])):
                     writer.add_image("reverse/{}".format(bi), torch.cat((recon[bi], img[bi]), dim=1), cur_step)
 

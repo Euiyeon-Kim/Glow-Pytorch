@@ -8,9 +8,7 @@ class FlowNet(nn.Module):
     """
         Squeeze -> K steps -> Split
     """
-    def __init__(self, img_shape, hidden_channels, K, L,
-                 actnorm_scale=1.0,
-                 LU_decomposed=False):
+    def __init__(self, img_shape, hidden_channels, K, L, actnorm_scale=1.0, LU_decomposed=False):
         super().__init__()
         self.K = K
         self.L = L
