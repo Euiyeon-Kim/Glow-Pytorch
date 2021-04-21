@@ -1,6 +1,5 @@
 from enum import Enum
 
-from dotmap import DotMap
 
 
 class Datasets(Enum):
@@ -41,7 +40,7 @@ class Config:
     y_criterion = "multi-classes"           # ["multi-classes", "single-class"]
 
     # Dataset
-    img_shape = (32, 32, 1)
+    img_shape = (32, 32, 3)
 
     # Optimizer
     lr = 1e-3
@@ -59,5 +58,5 @@ class Config:
     lr_log_freq = 50
     ckpt_save_freq = 2000
     max_ckpts = 20
-    sanity_freq = 1000
+    sanity_freq = 100
     infer_freq = 1000

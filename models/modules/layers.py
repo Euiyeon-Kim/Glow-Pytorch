@@ -83,11 +83,6 @@ def squeeze2d(inp, factor=2):
     if factor == 1:
         return inp
 
-    # size = input.size()
-    # B = size[0]
-    # C = size[1]
-    # H = size[2]
-    # W = size[3]
     B, C, H, W = inp.size()
 
     assert H % factor == 0 and W % factor == 0, "{}".format((H, W))
@@ -103,11 +98,6 @@ def unsqueeze2d(inp, factor=2):
     if factor == 1:
         return inp
 
-    # size = input.size()
-    # B = size[0]
-    # C = size[1]
-    # H = size[2]
-    # W = size[3]
     B, C, H, W = inp.size()
 
     assert C % (factor2) == 0, "{}".format(C)

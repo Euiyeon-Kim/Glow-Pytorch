@@ -11,8 +11,10 @@ class AffineCoupling(nn.Module):
     def __init__(self, in_channels, out_channels, hidden_channels):
         super().__init__()
         self.NN = nn.Sequential(
-            Conv2d(in_channels, hidden_channels), nn.ReLU(inplace=False),
-            Conv2d(hidden_channels, hidden_channels, kernel_size=[1, 1]), nn.ReLU(inplace=False),
+            Conv2d(in_channels, hidden_channels),
+            nn.ReLU(inplace=False),
+            Conv2d(hidden_channels, hidden_channels, kernel_size=[1, 1]),
+            nn.ReLU(inplace=False),
             Conv2dZeros(hidden_channels, out_channels)
         )
 

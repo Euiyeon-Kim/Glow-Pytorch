@@ -1,6 +1,5 @@
 import os
 
-import cv2
 import numpy as np
 
 from test_conf import Config
@@ -29,6 +28,8 @@ if __name__ == '__main__':
         img = img.to(data_device)
 
         z, nll, logits = model(x=img, y_onehot=None)
+        tmp = z.cpu().detach().numpy()
+        print(np.min(tmp), np.max(tmp))
         recon = model(z=z, y_onehot=None, reverse=True)
         recon = recon.cpu().numpy()
 

@@ -38,9 +38,8 @@ class Glow(nn.Module):
                                                                      self.flow.output_shapes[-1][3]])))
 
     def prior(self, y_onehot=None):
-        B, C = self.prior_h.size(0), self.prior_h.size(1)
+        B, C, _, _ = self.prior_h.size()
         h = self.prior_h.detach().clone()
-        assert torch.sum(h) == 0.0
 
         if self.config.learn_top:
             h = self.learn_top(h)
@@ -57,12 +56,23 @@ class Glow(nn.Module):
         else:
             return self.reverse_flow(z, y_onehot, eps_std)
 
+    def preprocess(self, x):
+        # Can add discretization level control
+        return x - 0.5
+
+    def postprocess(self, z):
+        return torch.clip(torch.floor((z + 0.5) * 256.), 0, 255)
+
     def normal_flow(self, x, y_onehot):
-        pixels = thops.pixels(x)
-        z = x + torch.normal(mean=torch.zeros_like(x),
-                             std=torch.ones_like(x) * (1. / 256.))
+        pixels = x[0].numel()
+
+        # Move to zero mean
+        z = self.preprocess(x)
+
+        # Dequantization
+        z = z + (torch.rand(x.size()) * (1. / 256.)).to(z.device)
         logdet = torch.zeros_like(x[:, 0, 0, 0])
-        logdet += float(-np.log(256.) * pixels)
+        logdet -= float(np.log(256.) * pixels)
 
         # encode
         z, objective = self.flow(z, logdet=logdet, reverse=False)
@@ -85,7 +95,8 @@ class Glow(nn.Module):
             mean, logs = self.prior(y_onehot)
             if z is None:   # Sample from Gaussian distribution
                 z = GaussianDiag.sample(mean, logs, eps_std)
-            x = self.flow(z, eps_std=eps_std, reverse=True)
+            z = self.flow(z, eps_std=eps_std, reverse=True)
+            x = self.postprocess(z)
         return x
 
     def set_actnorm_init(self, inited=True):
