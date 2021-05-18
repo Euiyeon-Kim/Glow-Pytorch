@@ -1,4 +1,4 @@
-# Conditional-Normalizing-Flow
+# Glow-pytorch
 Developing conditional normalizing flow
 
 
