@@ -2,13 +2,14 @@ import os
 import shutil
 
 import torch
+import numpy as np
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
 
 from config import Config
 from models.Glow import Glow
 from models import lr_scheduler
-from utils import get_proper_device, save
+from utils import get_proper_device, save, preprocess4log
 from dataloader.mnist import get_train_loader
 
 
@@ -109,7 +110,8 @@ def train(config):
             # Sanity check
             if cur_step % config.sanity_freq == 0:
                 recon = model(z=z, y_onehot=onehot_label, reverse=True)
-                print(f'Cur Step:{cur_step} | minimum: {torch.min(recon)}, maximum: {torch.max(recon)}')
+                recon = preprocess4log(recon)
+                print(f'\nCur Step:{cur_step} | minimum: {torch.min(recon)} | {torch.min(img)}, maximum: {torch.max(recon)} | {torch.max(img)}')
                 for bi in range(min([len(recon), 4])):
                     writer.add_image("reverse/{}".format(bi), torch.cat((recon[bi], img[bi]), dim=1), cur_step)
 

@@ -28,7 +28,7 @@ class Config:
     # Architecture
     K = 10
     L = 3
-    hidden_channels = 512
+    hidden_channels = 64
     actnorm_scale = 1.0
     LU_decomposed = False
 
@@ -58,5 +58,5 @@ class Config:
     lr_log_freq = 50
     ckpt_save_freq = 2000
     max_ckpts = 20
-    sanity_freq = 1000
+    sanity_freq = 1
     infer_freq = 1000

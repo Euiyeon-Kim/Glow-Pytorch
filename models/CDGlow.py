@@ -1,11 +1,6 @@
-import numpy as np
-import torch
 import torch.nn as nn
 
-import utils
 from models.FlowNet import FlowNet
-from models.modules import thops
-from models.modules.layers import GaussianDiag, Conv2dZeros, LinearZeros
 
 
 class CDGlow(nn.Module):

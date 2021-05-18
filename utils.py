@@ -3,7 +3,9 @@ import re
 import copy
 
 import torch
+import numpy as np
 from shutil import copyfile
+from torchvision.utils import make_grid
 
 
 def get_proper_cuda_device(device, verbose=True):
@@ -126,3 +128,9 @@ def load(step_or_path, graph, optim=None, criterion_dict=None, pkg_dir="", devic
 
     print("[Checkpoint]: Load {} successfully".format(save_path))
     return global_step
+
+
+def preprocess4log(tensor, min_max=(0, 1)):
+    tensor = tensor.squeeze().clamp_(*min_max)  # clamp
+    tensor = (tensor - min_max[0]) / (min_max[1] - min_max[0])  # to range [0,1]
+    return tensor

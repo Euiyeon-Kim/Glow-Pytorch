@@ -8,6 +8,7 @@ def get_train_loader(config):
     transform = transforms.Compose([transforms.Pad(2),
                                     transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
                                     transforms.ToTensor(),
+                                    transforms.Lambda(lambda t: t + torch.rand_like(t) / 256),
                                     transforms.Lambda(lambda x: x.expand(3, -1, -1))])
     train_dataset = MNIST(root='datasets', train=True, transform=transform, download=True)
     train_loader = DataLoader(dataset=train_dataset, batch_size=config.batch_size,
