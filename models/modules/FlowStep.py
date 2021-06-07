@@ -32,7 +32,7 @@ class FlowStep(nn.Module):
         return z, logdet
 
     def reverse_flow(self, inp, logdet):
-        assert inp.size(1) % 2 == 0  # For affine coupling layer
+        assert inp.size(1) % 2 == 0     # For affine coupling layer
         z, logdet = self.coupling(inp, logdet=logdet, reverse=True)
         z, logdet = self.permutation(inp, logdet=logdet, reverse=True)
         z, logdet = self.actnorm(inp, logdet=logdet, reverse=True)
@@ -48,9 +48,9 @@ class FlowStep(nn.Module):
 if __name__ == '__main__':
     import torch
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    step = FlowStep(4, 32).to(device)
+    step = FlowStep(12, 32).to(device)
     rand_log = torch.rand(16).to(device)
-    rand_inp = torch.rand(16, 4, 28, 28).to(device)
+    rand_inp = torch.rand(16, 12, 64, 64).to(device)
     tmp_inp, tmp_log = step(rand_inp, logdet=rand_log, reverse=False)
     print(tmp_inp.shape)
     print(tmp_log.shape)

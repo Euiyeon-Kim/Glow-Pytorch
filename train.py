@@ -8,6 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 from config import Config
 from models.Glow import Glow
 from models import lr_scheduler
+from models.modules import thops
 from utils import get_proper_device, save
 from dataloader.mnist import get_train_loader
 
@@ -54,9 +55,9 @@ def train(config):
 
             img, label = batch
             img = img.to(data_device)
-            # label = label.to(data_device)
-            # onehot_label = thops.onehot(label, num_classes=config.y_classes)
-            onehot_label = None
+            label = label.to(data_device)
+            onehot_label = thops.onehot(label, num_classes=config.y_classes)
+            # onehot_label = None
 
             # Initialize ActNorm weights
             if cur_step == 0:

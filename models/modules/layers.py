@@ -82,9 +82,7 @@ def squeeze2d(inp, factor=2):
     assert factor >= 1 and isinstance(factor, int)
     if factor == 1:
         return inp
-
     B, C, H, W = inp.size()
-
     assert H % factor == 0 and W % factor == 0, "{}".format((H, W))
     x = inp.view(B, C, H // factor, factor, W // factor, factor)
     x = x.permute(0, 1, 3, 5, 2, 4).contiguous()

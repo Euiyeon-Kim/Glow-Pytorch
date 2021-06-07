@@ -61,18 +61,19 @@ class Glow(nn.Module):
         return x - 0.5
 
     def postprocess(self, z):
-        return torch.clip(torch.floor((z + 0.5) * 256.), 0, 255)
+        return torch.clip(torch.floor((z + 0.5) * self.config.n_bins) * (256. / self.config.n_bins),
+                          0, 255).type(torch.uint8)
 
     def normal_flow(self, x, y_onehot):
         pixels = x[0].numel()
 
-        # Move to zero mean
+        # Move to zero mean (-0.5 ~ 0.5)
         z = self.preprocess(x)
 
-        # Dequantization
-        z = z + (torch.rand(x.size()) * (1. / 256.)).to(z.device)
+        # Dequantization (Discrete -> Continuous)
+        z = z + (torch.rand(z.size()) * (1. / self.config.n_bins)).to(z.device)
         logdet = torch.zeros_like(x[:, 0, 0, 0])
-        logdet -= float(np.log(256.) * pixels)
+        logdet -= float(np.log(self.config.n_bins) * pixels)
 
         # encode
         z, objective = self.flow(z, logdet=logdet, reverse=False)
@@ -80,7 +81,6 @@ class Glow(nn.Module):
         # prior
         mean, logs = self.prior(y_onehot)
         objective += GaussianDiag.logp(mean, logs, z)
-
         if self.config.y_condition:
             y_logits = self.project_class(z.mean(2).mean(2))
         else:

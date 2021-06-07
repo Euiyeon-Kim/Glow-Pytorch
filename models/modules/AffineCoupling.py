@@ -11,11 +11,11 @@ class AffineCoupling(nn.Module):
     def __init__(self, in_channels, out_channels, hidden_channels):
         super().__init__()
         self.NN = nn.Sequential(
-            Conv2d(in_channels, hidden_channels),
+            Conv2d(in_channels, hidden_channels),                               # ActNorm
             nn.ReLU(inplace=False),
-            Conv2d(hidden_channels, hidden_channels, kernel_size=[1, 1]),
+            Conv2d(hidden_channels, hidden_channels, kernel_size=[1, 1]),       # ActNorm
             nn.ReLU(inplace=False),
-            Conv2dZeros(hidden_channels, out_channels)
+            Conv2dZeros(hidden_channels, out_channels)                          # w/o ActNorm
         )
 
     def forward(self, inp, logdet=None, reverse=False):
@@ -25,8 +25,8 @@ class AffineCoupling(nn.Module):
         scale = torch.sigmoid(scale + 2.)
 
         if not reverse:     # Normal flow
-            b = b + shift
-            b = b * scale
+            b += shift
+            b *= scale
             d_logdet = thops.sum(torch.log(scale), dim=[1, 2, 3])
         else:
             b = b / scale
@@ -35,5 +35,4 @@ class AffineCoupling(nn.Module):
 
         logdet = logdet + d_logdet
         z = thops.cat_feature(a, b)
-
         return z, logdet

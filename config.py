@@ -1,24 +1,29 @@
 from enum import Enum
 
 
-
 class Datasets(Enum):
     def __str__(self):
         return '%s' % self.value
 
     CelebA = 'celeba',
     MNIST = 'mnist'
+    CIFAR10 = 'cifar10'
 
 
 class Config:
     # Options
-    exp_name = 'why'
-    dataset_name = Datasets.MNIST
-    device = ["cuda:0"]     # ["cuda:0", "cuda:1"]
+    exp_name = 'debug'
+    device = ["cuda:0"]  # ["cuda:0", "cuda:1"]
+
+    # Dataset
+    n_bits = 8
+    n_bins = 2 ** n_bits
+    dataset_name = Datasets.CIFAR10
+    img_shape = (32, 32, 3)
 
     # Train
+    batch_size = 32
     num_iters = 1000000
-    batch_size = 128
 
     # Paths
     exp_path = f'exps/{exp_name}'
@@ -26,21 +31,18 @@ class Config:
     valid_root_dir = f'datasets/{dataset_name}/valid'
 
     # Architecture
-    K = 10
+    K = 32
     L = 3
     hidden_channels = 512
     actnorm_scale = 1.0
     LU_decomposed = False
 
     # Ablation
-    learn_top = False
+    learn_top = True
     classification_weight = 0.01
     y_condition = False
     y_classes = 10
     y_criterion = "multi-classes"           # ["multi-classes", "single-class"]
-
-    # Dataset
-    img_shape = (32, 32, 3)
 
     # Optimizer
     lr = 1e-3
